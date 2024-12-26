@@ -6,7 +6,19 @@ class Product(BaseModel):
     image_url: str
 
 class ScrapeSettings(BaseModel):
-    categories: list[str]
+    categories: str
+    page_limit: int
+    filters: dict | None = {}
+    sort_by: str | None = None
+
+
+class ScrapeSettingsName(BaseModel):
+    name: str
+
+
+
+class ScrapeSettingsWord(BaseModel):
+    word: str
     page_limit: int
     filters: dict | None = {}
     sort_by: str | None = None

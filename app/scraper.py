@@ -64,7 +64,7 @@ class Scraper:
 
     async def scrape(self, settings: dict) -> List[dict]:
         base_url = "https://dentalstall.com/product-category/{}"
-        category = settings['categories'][0]  # Assuming one category per scrape
+        category = settings['categories']
         page_limit = settings.get('page_limit', 1)
         filters = settings.get('filters', {})
         sort_by = settings.get('sort_by', 'price')
@@ -78,6 +78,75 @@ class Scraper:
                 page_url = f"{base_url.format(category)}/"
             if filters:
                 page_url += f"?min_price={filters.get('min_price', 0)}&max_price={filters.get('max_price', 1000)}&orderby={sort_by}"
+            products = await self.scrape_page(page_url, filters)
+            all_products.extend(products)
+
+        # You can process the data here (e.g., saving to database or cache)
+        if self.database:
+            self.database.save_products(all_products)
+        #
+        if self.notifier:
+            self.notifier.notify(f"{len(all_products)} products scraped from url {page_url}")
+
+        return all_products
+
+
+
+    async def scrapeString(self, settings: dict) -> List[dict]:
+
+        category = settings['word']
+        base_url = "https://dentalstall.com/?s="+category+"&post_type=product"
+
+        page_limit = settings.get('page_limit', 1)
+        filters = settings.get('filters', {})
+        sort_by = settings.get('sort_by', 'price')
+
+        all_products = []
+
+        for page_num in range(1, page_limit + 1):
+            if page_num !=1:
+                page_url = f"{base_url}/page/{page_num}/"
+            else:
+                page_url = f"{base_url}/"
+            if filters:
+                page_url += f"?min_price={filters.get('min_price', 0)}&max_price={filters.get('max_price', 1000)}&orderby={sort_by}"
+            print("page_url")
+            print(page_url)
+            products = await self.scrape_page(page_url, filters)
+            all_products.extend(products)
+
+        # You can process the data here (e.g., saving to database or cache)
+        if self.database:
+            self.database.save_products(all_products)
+        #
+        if self.notifier:
+            self.notifier.notify(f"{len(all_products)} products scraped from url {page_url}")
+
+        return all_products
+
+
+    async def scrapeproduct(self, settings: dict) -> List[dict]:
+
+        category = settings['name'].strip().lower().split(" ")
+        category  = "-".join(category)
+
+        base_url = "https://dentalstall.com/product/"+category +"/"
+        print("---------------",base_url)
+        page_limit = settings.get('page_limit', 1)
+        filters = settings.get('filters', {})
+        sort_by = settings.get('sort_by', 'price')
+
+        all_products = []
+
+        for page_num in range(1, page_limit + 1):
+            if page_num !=1:
+                page_url = f"{base_url}/page/{page_num}/"
+            else:
+                page_url = f"{base_url}/"
+            if filters:
+                page_url += f"?min_price={filters.get('min_price', 0)}&max_price={filters.get('max_price', 1000)}&orderby={sort_by}"
+            print("page_url")
+            print(page_url)
             products = await self.scrape_page(page_url, filters)
             all_products.extend(products)
 

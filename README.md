@@ -1,6 +1,6 @@
 Overview
 This scraper is designed to extract product details (name, price, and image URL) from https://dentalstall.com. 
-It supports optional filters like price range and sorting. 
+It supports optional filters like price range and sorting.  Ypu can scrap using the category , exact product name, or a string.
 The scraper uses FastAPI for serving an API endpoint to trigger the scraping process.
 
 
@@ -30,16 +30,34 @@ scrapper/
 
 
 Running the Scraper
-Go to folder and the run below command
+Go to folder and the run below command and then open the swagger for this (http://localhost:8080/docs)
     python run.py
 
 
 
 
+
+
+
+
 Input Format
-Sample Input 1: Scraping with Price Range Filter
+
+Sample Input: Scraping With Product name (3 Pages)
 {
-  "categories": ["orthodontics"],
+  "name": "Waldent Air-Motor Engine"
+  
+}
+
+Sample Input: Scraping With any matching string name (3 Pages)
+
+{
+  "word": "chair",
+  "page_limit": 2
+}
+
+Sample Input : Scraping with Price Range Filter
+{
+  "categories": "orthodontics",
   "page_limit": 2,
   "filters": {
     "min_price": 50,
@@ -49,9 +67,9 @@ Sample Input 1: Scraping with Price Range Filter
 }
 
 
-Sample Input 2: Scraping Without Filters (3 Pages)
+Sample Input : Scraping Without Filters (3 Pages)
 {
-  "categories": ["orthodontics"],
+  "categories": "orthodontics",
   "page_limit": 3,
   "filters": {},
   "sort_by": "date"
@@ -81,7 +99,9 @@ Successful Scraping Response
 
 It  will also save the data in product.json file.
 
-
+default username and password for testing are mention below
+username - test
+password - password
 
 
 

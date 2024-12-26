@@ -21,7 +21,7 @@ def run():
         "run:app",
         host="0.0.0.0",
         reload=True,
-        port=8095
+        port=8080
     )
 
 
